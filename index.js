@@ -1,3 +1,4 @@
+/* eslint-disable strict */
 const store = {
   items: [
     { id: cuid(), name: 'apples', checked: false },
@@ -21,10 +22,15 @@ const generateItemElement = function (item) {
       ${itemTitle}
       <div class='shopping-item-controls'>
         <button class='shopping-item-toggle js-item-toggle'>
-          <span class='button-label'>check</span>
+          <span class='button-label'>Check</span>
         </button>
         <button class='shopping-item-delete js-item-delete'>
-          <span class='button-label'>delete</span>
+          <span class='button-label'>Delete</span>
+        </button>
+        <input type="text" placeholder="New item name" class='shopping-item-rename'>
+        </input>
+        <button class='shopping-item-rename js-item-rename'>
+          <span class='button-label'>Rename</span>
         </button>
       </div>
     </li>`;
@@ -127,6 +133,31 @@ const handleDeleteItemClicked = function () {
   });
 };
 
+const renameListItem = function(id, newName) {
+  // This will allow us to rename our list item.
+  // Take user input from the text input element (newName)
+  // and applies it to the list item (id).
+  
+  // First, find out list item.
+  const index = store.items.findIndex(item => item.id === id);
+  // Next, rename our item id to our new name.
+  store.items[index].name = newName;
+};
+
+const handleRenameItemClicked = function() {
+  $('.js-shopping-list').on('click', '.js-item-rename', event => {
+    // Get ID index.
+    const id = getItemIdFromElement(event.currentTarget);
+    // Get user input from text box.
+    let newName = $('.shopping-item-rename').val();
+    console.log(newName);
+    // Rename item.
+    renameListItem(id, newName);
+    // Render update.
+    render();
+  });
+};
+
 /**
  * Toggles the store.hideCheckedItems property
  */
@@ -159,6 +190,7 @@ const handleShoppingList = function () {
   handleNewItemSubmit();
   handleItemCheckClicked();
   handleDeleteItemClicked();
+  handleRenameItemClicked();
   handleToggleFilterClick();
 };
 
